@@ -1,12 +1,12 @@
 import click
 from flask import current_app, g
-from neomodel import db
+import neomodel
 # from neomodel import config
 
 
 def get_db():
     if 'db' not in g:
-        g.db = db.set_connection(
+        g.db = neomodel.db.set_connection(
             url=current_app.config["DATABASE"]
         )
         # g.db.row_factory = sqlite3.Row
@@ -38,3 +38,17 @@ def init_db_command():
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+
+
+class LastName(neomodel.StructuredNode):
+    last_name = neomodel.StringProperty(required=True)
+    name_day = neomodel.DateProperty()
+
+
+class User(neomodel.StructuredNode):
+    # uid = UniqueIdProperty()
+    email = neomodel.EmailProperty(required=True)
+    first_name = neomodel.StringProperty()
+    last_name = neomodel.Relationship(LastName, 'HAS_NAME')
+    friends = neomodel.Relationship('User', 'ARE_FRIENDS')
+

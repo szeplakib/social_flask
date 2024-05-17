@@ -1,6 +1,8 @@
 import os
+from datetime import date
 
 from flask import Flask
+import neomodel
 
 
 def create_app(test_config=None):
@@ -29,9 +31,22 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+
     # a simple page that says hello
     @app.route('/hello')
     def hello():
+        db.get_db()
+        with neomodel.db.transaction:
+            goszti_name = db.LastName(last_name='Goszti', name_day=date.fromisoformat('1992-04-12')).save()
+            goszti = db.User(first_name='Kovacs', email='valami@valami.com').save()
+            goszti.last_name.connect(goszti_name)
+            goszti.save()
+
+
+        # goszti.last_name.connect(goszti_name)
+        # goszti.save()
+
+
         return 'Hello, World!'
 
     from . import db
