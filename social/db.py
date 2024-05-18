@@ -1,7 +1,8 @@
 import click
 from flask import current_app, g
 import neomodel
-# from neomodel import config
+from .models import LastName
+from .models import User
 
 
 def get_db():
@@ -21,34 +22,24 @@ def close_db(e=None):
         db.close_connection()
 
 
-def init_db():
+def install_labels():
     db = get_db()
+    neomodel.install_labels(LastName)
+    neomodel.install_labels(User)
 
-    # with current_app.open_resource('schema.sql') as f:
-    #     db.executescript(f.read().decode('utf8'))
 
-
-@click.command('init-db')
-def init_db_command():
-    """Clear the existing data and create new tables."""
-    init_db()
-    click.echo('Initialized the database.')
+@click.command('install_labels')
+def install_labels_command():
+    """Installs labels. This is going to set constrains and indices."""
+    install_labels()
+    click.echo('All SPECIFIED lables were installed')
 
 
 def init_app(app):
     app.teardown_appcontext(close_db)
-    app.cli.add_command(init_db_command)
+    app.cli.add_command(install_labels_command)
 
 
-class LastName(neomodel.StructuredNode):
-    last_name = neomodel.StringProperty(required=True)
-    name_day = neomodel.DateProperty()
 
 
-class User(neomodel.StructuredNode):
-    # uid = UniqueIdProperty()
-    email = neomodel.EmailProperty(required=True)
-    first_name = neomodel.StringProperty()
-    last_name = neomodel.Relationship(LastName, 'HAS_NAME')
-    friends = neomodel.Relationship('User', 'ARE_FRIENDS')
 
