@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+{% set page_title = 'Search' %}
+{% block content %}
+    {{ render_form(form, action=url_for("index.search")) }}
+    {% block results %}
+    {% endblock %}
+{% endblock %}

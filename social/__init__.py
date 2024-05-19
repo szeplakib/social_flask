@@ -8,6 +8,9 @@ from .models import User
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
+    from flask_bootstrap import Bootstrap5
+    bootstrap = Bootstrap5(app)
+
     with app.open_resource('.db_cred') as f:
         db_cred = f.read().decode('utf8')
 
@@ -26,8 +29,10 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from social.views.hello_test import hello_test
-    app.register_blueprint(hello_test)
+    from social.views import hello_test, auth, index
+    app.register_blueprint(hello_test.hello_test)
+    app.register_blueprint(auth.auth)
+    app.register_blueprint(index.index)
 
     from . import db
     db.init_app(app)
