@@ -1,7 +1,6 @@
 import click
 from flask import current_app, g
 import neomodel
-from .models import LastName
 from .models import User
 
 
@@ -24,7 +23,6 @@ def close_db(e=None):
 
 def install_labels():
     db = get_db()
-    neomodel.install_labels(LastName)
     neomodel.install_labels(User)
 
 

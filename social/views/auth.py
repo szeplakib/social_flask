@@ -2,6 +2,7 @@ import functools
 
 from flask import Blueprint, current_app, request, render_template, redirect, url_for, flash, session, g
 from social.db import get_db
+from social.forms import RegisterForm
 from social.models import User
 from flask_bcrypt import Bcrypt
 import neomodel
@@ -11,31 +12,28 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/register', methods=('GET', 'POST'))
 def register():
+    form = RegisterForm()
     bcrypt = Bcrypt(current_app)
-    if request.method == 'POST':
-        email = request.form['email']
-        password = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
-        db = get_db()
-        error = None
+    if request.method == 'POST' and form.validate_on_submit():
+        email = form.email.data
+        password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        get_db()
+        try:
+            with neomodel.db.transaction:
+                user = User(
+                    email=email,
+                    password=password,
+                    first_name=form.first_name.data,
+                    birthday=form.birthday.data
+                )
+                user.save()
+        except neomodel.exceptions.UniqueProperty:
+            flash(f"User with email: {email} is already registered.")
+        else:
+            return redirect(url_for("auth.login"))
 
-        if not email:
-            error = 'Email is required.'
-        elif not password:
-            error = 'Password is required.'
 
-        if error is None:
-            try:
-                with neomodel.db.transaction:
-                    user = User(email=email, password=password)
-                    user.save()
-            except neomodel.exceptions.UniqueProperty:
-                error = f"User with email: {email} is already registered."
-            else:
-                return redirect(url_for("auth.login"))
-
-        flash(error)
-
-    return render_template('auth/register.html')
+    return render_template('auth/register.html', form=form)
 
 
 @auth.route('/login', methods=('GET', 'POST'))

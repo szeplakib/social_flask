@@ -1,6 +1,15 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SubmitField, PasswordField, DateField
+from wtforms.validators import DataRequired, Length, Optional
+
+
+class RegisterForm(FlaskForm):
+    email = StringField('Email', [DataRequired()])
+    password = PasswordField('Password', [Length(min=3)])
+    first_name = StringField('First Name')
+    last_name = StringField('Last Name')
+    birthday = DateField('Birthday', [Optional()])
+    submit = SubmitField('Resister', render_kw={'class': 'btn btn-success btn-block'})
 
 
 class SearchForm(FlaskForm):

@@ -1,7 +1,6 @@
 import os
 from flask import Flask
 import neomodel
-from .models import LastName
 from .models import User
 
 
