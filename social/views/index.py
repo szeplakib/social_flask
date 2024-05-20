@@ -13,5 +13,5 @@ def search():
     if request.method == 'POST' and form.validate_on_submit():
         search_word = f'.*{form.search.data}.*\\@.*\\..*'
         users = User.nodes.filter(email__regex=search_word)
-        return render_template('index/search_result.html', form=form, users=users)
-    return render_template('index/search.html', form=form)
+        return render_template('index/search.html', form=form, users=users)
+    return render_template('index/search.html', form=form, users=None)

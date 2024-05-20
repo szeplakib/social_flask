@@ -3,6 +3,9 @@
 {% set page_title = 'Search' %}
 {% block content %}
     {{ render_form(form, action=url_for("index.search")) }}
-    {% block results %}
-    {% endblock %}
+    {% if users %}
+        {% for user in users %}
+            <li><span>{{ user.email }}</span>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

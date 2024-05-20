@@ -2,7 +2,7 @@ import functools
 
 from flask import Blueprint, current_app, request, render_template, redirect, url_for, flash, session, g
 from social.db import get_db
-from social.forms import RegisterForm
+from social.forms import RegisterForm, LoginForm
 from social.models import User
 from flask_bcrypt import Bcrypt
 import neomodel
@@ -38,10 +38,11 @@ def register():
 
 @auth.route('/login', methods=('GET', 'POST'))
 def login():
+    form = LoginForm()
     bcrypt = Bcrypt(current_app)
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+    if request.method == 'POST' and form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
         get_db()
         error = None
         try:
@@ -62,7 +63,7 @@ def login():
 
         flash(error)
 
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', form=form)
 
 
 @auth.before_app_request

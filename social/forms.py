@@ -3,6 +3,12 @@ from wtforms import StringField, SubmitField, PasswordField, DateField
 from wtforms.validators import DataRequired, Length, Optional
 
 
+class LoginForm(FlaskForm):
+    email = StringField('Email', [DataRequired()])
+    password = PasswordField('Password', [DataRequired()])
+    submit = SubmitField('Login', render_kw={'class': 'btn btn-success btn-block'})
+
+
 class RegisterForm(FlaskForm):
     email = StringField('Email', [DataRequired()])
     password = PasswordField('Password', [Length(min=3)])
