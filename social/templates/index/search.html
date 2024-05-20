@@ -1,11 +1,25 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/form.html' import render_form %}
 {% set page_title = 'Search' %}
+{% block search_block %}
+    {{
+        render_form(
+            form,
+            form_group_classes="d-flex",
+            action=url_for("index.search", form_type = 'horizontal'),
+            method="get",
+            button_style='btn-outline-dark',
+            extra_classes='d-flex'
+        )
+    }}
+{% endblock %}
+
 {% block content %}
-    {{ render_form(form, action=url_for("index.search"), method="get") }}
-    {% if users %}
-        {% for user in users %}
-            <li><span>{{ user.email }}</span>
+    {% if entities %}
+        <ul class="list-group list-group-flush">
+        {% for entity in entities %}
+            <li class="list-group-item"><span>{{ entity }}</span> <button type="button" class="btn btn-outline-primary btn-sm">Send Friend Request</button></li>
         {% endfor %}
+        </ul>
     {% endif %}
 {% endblock %}

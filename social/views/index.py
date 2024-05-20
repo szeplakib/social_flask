@@ -14,4 +14,8 @@ def search():
     if form.search.data and request.method == 'GET':
         search_word = f'.*{form.search.data}.*\\@.*\\..*'
         users = User.nodes.filter(email__regex=search_word)
-    return render_template('index/search.html', form=form, users=users)
+    return render_template(
+        'index/search.html',
+        form=form,
+        entities=[user.email for user in users]
+    )
