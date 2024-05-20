@@ -9,9 +9,9 @@ index = Blueprint('index', __name__)
 @index.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
-    form = SearchForm()
-    if request.method == 'POST' and form.validate_on_submit():
+    form = SearchForm(request.args)
+    users = None
+    if form.search.data and request.method == 'GET':
         search_word = f'.*{form.search.data}.*\\@.*\\..*'
         users = User.nodes.filter(email__regex=search_word)
-        return render_template('index/search.html', form=form, users=users)
-    return render_template('index/search.html', form=form, users=None)
+    return render_template('index/search.html', form=form, users=users)

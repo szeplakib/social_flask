@@ -20,4 +20,4 @@ class RegisterForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     search = StringField('search', [DataRequired()])
-    submit = SubmitField('Search', render_kw={'class': 'btn btn-success btn-block'})
+    submit = SubmitField('Search', render_kw={'class': 'btn btn-success btn-block', 'method': 'GET'})

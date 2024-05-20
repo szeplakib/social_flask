@@ -2,7 +2,7 @@
 {% from 'bootstrap5/form.html' import render_form %}
 {% set page_title = 'Search' %}
 {% block content %}
-    {{ render_form(form, action=url_for("index.search")) }}
+    {{ render_form(form, action=url_for("index.search"), method="get") }}
     {% if users %}
         {% for user in users %}
             <li><span>{{ user.email }}</span>
